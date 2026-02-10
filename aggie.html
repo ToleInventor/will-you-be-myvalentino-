@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggie Wangu</title>
+    <style>
+        body { margin: 0; padding: 0; min-height: 100vh; background: linear-gradient(135deg, #adc4f7 0%, #ff14ff 50%, #4a15c7 100%); font-family: 'Georgia', serif; overflow-x: hidden; display: flex; justify-content: center; align-items: flex-start; color: #fff; animation: sway 8s ease-in-out infinite alternate; }
+        @keyframes sway { 0% { transform: rotate(-0.5deg); } 100% { transform: rotate(0.5deg); } }
+        .container { text-align: center; max-width: 90%; animation: fadeIn 2s ease-in-out; position: relative; z-index: 2; margin-top: 50px; }
+        h1 { font-size: 2.5em; margin-bottom: 0.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); animation: pulse 2s infinite; }
+        h1 span:last-child { color: #ff1493; }
+        .poem { font-size: 1.3em; line-height: 1.6; margin-bottom: 2em; opacity: 0.95; }
+        .buttons { display: flex; gap: 1em; justify-content: center; flex-wrap: wrap; }
+        button { padding: 1em 2em; font-size: 1.1em; font-weight: bold; border: none; border-radius: 50px; cursor: pointer; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 8px 20px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 1px; }
+        #yesBtn { background: linear-gradient(45deg, #ff4500, #ff6347); color: white; }
+        #noBtn { background: linear-gradient(45deg, #696969, #a9a9a9); color: #fff; }
+        button:hover { transform: translateY(-5px) scale(1.05); }
+        .response { margin-top: 2em; font-size: 1.4em; min-height: 6em; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.8s ease-out; }
+        .response.show { opacity: 1; transform: scale(1); }
+        .number-ask, .phone-section { margin-top: 1.5em; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; display: none; }
+        .number-ask.show, .phone-section.show { opacity: 1; transform: translateY(0); display: block; }
+        input[type="tel"] { padding: 12px 20px; font-size: 1.1em; border: none; border-radius: 25px; width: 250px; background: rgba(255,255,255,0.2); color: #fff; text-align: center; backdrop-filter: blur(10px); }
+        .send-btn { margin-top: 10px; background: linear-gradient(45deg, #32cd32, #90ee90); color: #fff; border-radius: 25px; padding: 10px 25px; border:none; cursor:pointer; }
+        .petals { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .petal { position: absolute; font-size: 18px; animation: petalFloat 8s linear infinite; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes petalFloat { 0% { transform: translateY(100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100px) rotate(720deg); opacity: 0; } }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="petals" id="petals"></div>
+    <div class="container">
+        <h1><span>Aggie</span> <span>wangu</span></h1>
+        <div class="poem" id="story">
+            March 13, 2022—we found each other.<br>
+            April 13, 2022—you said yes, my heart found home.<br>
+            One year apart. We lost words through storms we couldn't fight.<br>
+            I searched every night. I waited through silence.<br>
+            Now here—will you come back to what we were?
+        </div>
+        <div class="buttons" id="buttons">
+            <button id="yesBtn">Yes, I'm yours</button>
+            <button id="noBtn">Not ready</button>
+        </div>
+        <div class="response" id="response"></div>
+        <div class="number-ask" id="numberAsk"></div>
+        <div class="phone-section" id="phoneSection">
+            <input type="tel" id="phoneInput" placeholder="Your number..." maxlength="15">
+            <br>
+            <button class="send-btn" onclick="sendNumber()">Send</button>
+        </div>
+    </div>
+
+<script>
+(function(){ emailjs.init("wpkTO75TywMfnFjyK"); })();
+
+const SERVICE_ID = "service_acwcvok";
+const RESPONSE_TEMPLATE_ID = "template_vn1yzju";
+const CONTACT_TEMPLATE_ID = "template_ec7s7ub";
+
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const buttons = document.getElementById('buttons');
+const response = document.getElementById('response');
+const story = document.getElementById('story');
+const numberAsk = document.getElementById('numberAsk');
+const phoneSection = document.getElementById('phoneSection');
+
+function sendInteraction(type, msg) {
+    emailjs.send(SERVICE_ID, RESPONSE_TEMPLATE_ID, {
+        response_type: type,
+        message: msg
+    });
+}
+
+yesBtn.onclick = function() {
+    buttons.classList.add('hidden');
+    story.innerHTML = "You came back. That year apart melted away. March 13th began us. April 13th sealed us. Now we begin forever. My hands remember yours. Welcome home, Aggie wangu.";
+    response.innerHTML = '<span>I never stopped loving you.</span>';
+    response.classList.add('show');
+    sendInteraction("YES", "Aggie said yes to forever!");
+    setTimeout(() => {
+        numberAsk.innerHTML = `
+            <div style="font-size: 1.2em; margin-bottom: 1em;">Would you mind sharing your number again?</div>
+            <div class="buttons">
+                <button onclick="shareNumber()">No problem</button>
+                <button onclick="mindSharing()">I mind</button>
+            </div>
+        `;
+        numberAsk.classList.add('show'); 
+    }, 1500);
+    createPetals();
+};
+
+noBtn.onclick = function() {
+    buttons.classList.add('hidden');
+    response.innerHTML = '<span style="color: purple;">I know it hurt. The silence was cruel. But 365 days couldn\'t erase April 13th. I fought everything to find you again. When your heart remembers—say yes.</span>';
+    response.classList.add('show');
+    sendInteraction("NOT READY", "Aggie clicked 'Not ready'.");
+    setTimeout(() => {
+        buttons.classList.remove('hidden');
+        response.classList.remove('show');
+        response.innerHTML = '';
+    }, 5000);
+};
+
+function shareNumber() {
+    numberAsk.classList.remove('show');
+    phoneSection.classList.add('show');
+}
+
+function mindSharing() {
+    numberAsk.innerHTML = `
+        <div style="font-size: 1.2em; color: #ff4500; margin-bottom: 1em;">Please, Aggie... just your number. One call could bring back everything we lost.</div>
+        <div class="buttons"><button onclick="shareNumber()">Okay, here</button><button onclick="stillMind()">Still no</button></div>
+    `;
+}
+
+function stillMind() {
+    numberAsk.innerHTML = `
+        <div style="font-size: 1.1em; color: #ffd700; margin-bottom: 1em;">I understand. Whenever you're ready...</div>
+        <div class="buttons"><button onclick="shareNumber()">Actually yes</button></div>
+    `;
+}
+
+function sendNumber() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (phone) {
+        emailjs.send(SERVICE_ID, CONTACT_TEMPLATE_ID, {
+            message: "Aggie shared her number.",
+            phone: phone
+        });
+        response.innerHTML += '<br><span style="color: #32cd32;">Thank you! I\'ll call soon. 💕</span>';
+        phoneSection.classList.remove('show');
+    }
+}
+
+function createPetals() {
+    const symbols = ['❤️', '💕', '😍', '😘'];
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const p = document.createElement('div');
+            p.className = 'petal';
+            p.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            document.getElementById('petals').appendChild(p);
+            setTimeout(() => p.remove(), 7000);
+        }, i * 150);
+    }
+}
+</script>
+</body>
+</html>
