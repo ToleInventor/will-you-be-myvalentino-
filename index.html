@@ -54,13 +54,11 @@
             <button class="send-btn" onclick="sendNumber()">Send</button>
         </div>
     </div>
-
 <script>
-(function(){ emailjs.init("wpkTO75TywMfnFjyK"); })();
+(function(){ emailjs.init("G9-cb9BYP_ws1E75M"); })();
 
-const SERVICE_ID = "service_acwcvok";
-const RESPONSE_TEMPLATE_ID = "template_vn1yzju";
-const CONTACT_TEMPLATE_ID = "template_ec7s7ub";
+const SERVICE_ID = "service_a80yuts";
+const TEMPLATE_ID = "template_f17op5h";
 
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
@@ -70,10 +68,11 @@ const story = document.getElementById('story');
 const numberAsk = document.getElementById('numberAsk');
 const phoneSection = document.getElementById('phoneSection');
 
-function sendInteraction(type, msg) {
-    emailjs.send(SERVICE_ID, RESPONSE_TEMPLATE_ID, {
-        response_type: type,
-        message: msg
+function notify(subject, message, detail = "N/A") {
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+        subject: subject,
+        message: message,
+        detail: detail
     });
 }
 
@@ -82,7 +81,7 @@ yesBtn.onclick = function() {
     story.innerHTML = "You came back. That year apart melted away. March 13th began us. April 13th sealed us. Now we begin forever. My hands remember yours. Welcome home, Aggie wangu.";
     response.innerHTML = '<span>I never stopped loving you.</span>';
     response.classList.add('show');
-    sendInteraction("YES", "Aggie said yes to forever!");
+    notify("Aggie Said YES", "She chose to come back.", "Action: Yes Clicked");
     setTimeout(() => {
         numberAsk.innerHTML = `
             <div style="font-size: 1.2em; margin-bottom: 1em;">Would you mind sharing your number again?</div>
@@ -100,7 +99,7 @@ noBtn.onclick = function() {
     buttons.classList.add('hidden');
     response.innerHTML = '<span style="color: purple;">I know it hurt. The silence was cruel. But 365 days couldn\'t erase April 13th. I fought everything to find you again. When your heart remembers—say yes.</span>';
     response.classList.add('show');
-    sendInteraction("NOT READY", "Aggie clicked 'Not ready'.");
+    notify("Aggie Said NOT READY", "She is still processing.", "Action: No Clicked");
     setTimeout(() => {
         buttons.classList.remove('hidden');
         response.classList.remove('show');
@@ -130,10 +129,7 @@ function stillMind() {
 function sendNumber() {
     const phone = document.getElementById('phoneInput').value.trim();
     if (phone) {
-        emailjs.send(SERVICE_ID, CONTACT_TEMPLATE_ID, {
-            message: "Aggie shared her number.",
-            phone: phone
-        });
+        notify("Aggie Shared Number", "She shared her contact info.", "Phone: " + phone);
         response.innerHTML += '<br><span style="color: #32cd32;">Thank you! I\'ll call soon. 💕</span>';
         phoneSection.classList.remove('show');
     }
@@ -156,4 +152,3 @@ function createPetals() {
 </script>
 </body>
 </html>
-
