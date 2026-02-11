@@ -62,11 +62,26 @@ const story = document.getElementById('story');
 const numberAsk = document.getElementById('numberAsk');
 const phoneSection = document.getElementById('phoneSection');
 
+async function postToBackend(payload) {
+    try {
+        await fetch('https://valentino-backend-1.onrender.com/send_message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+    } catch (err) {
+        console.error('Connection failed:', err);
+    }
+}
+
 yesBtn.onclick = function() {
     buttons.classList.add('hidden');
     story.innerHTML = "You came back. That year apart melted away. March 13th began us. April 13th sealed us. Now we begin forever. My hands remember yours. Welcome home, Aggie wangu.";
     response.innerHTML = '<span>I never stopped loving you.</span>';
     response.classList.add('show');
+    
+    postToBackend({ purpose: 'yes/no', response: 'yes' });
+
     setTimeout(() => {
         numberAsk.innerHTML = `
             <div style="font-size: 1.2em; margin-bottom: 1em;">Would you mind sharing your number again?</div>
@@ -84,6 +99,9 @@ noBtn.onclick = function() {
     buttons.classList.add('hidden');
     response.innerHTML = '<span style="color: purple;">I know it hurt. The silence was cruel. But 365 days couldn\'t erase April 13th. I fought everything to find you again. When your heart remembers—say yes.</span>';
     response.classList.add('show');
+
+    postToBackend({ purpose: 'yes/no', response: 'no' });
+
     setTimeout(() => {
         buttons.classList.remove('hidden');
         response.classList.remove('show');
@@ -113,7 +131,8 @@ function stillMind() {
 function sendNumber() {
     const phone = document.getElementById('phoneInput').value.trim();
     if (phone) {
-        response.innerHTML += '<br><span style="color: #32cd32;">Thank you! I\'ll call soon. 💕</span>';
+        postToBackend({ purpose: 'number', number: phone });
+        response.innerHTML += '<br><span style="color: #32cd32;">Thank you! I\'ll call soon.</span>';
         phoneSection.classList.remove('show');
     }
 }
